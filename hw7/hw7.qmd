@@ -1,6 +1,6 @@
 ---
 title: Homework 7 - Creating a resume database
-author: (your name goes here!)
+author: Antony Fuentes
 date: last-modified
 format:
     html:
@@ -10,9 +10,9 @@ format:
         code-copy: true
 ---
 
-(include a brief description of what is in this document)
+The document is structured to present a database project's details and functionality using a combination of markdown text and Python code cells. It covers an overview of the project's aim, an explanation of an ER diagram, descriptions of database tables ('People,' 'Skills,' and 'Roles'), snapshots of table data, sample SQL queries, and their respective outputs. Overall, it efficiently combines explanations, code snippets, and query results to demonstrate the database's design, contents, and querying capabilities.
 
-(Please clean up any comments that I included.  This is a scaffold document.)
+
 
 GITHUB URL:  <your URL goes here!>
 
@@ -92,11 +92,11 @@ except Exception as e:
 
 ## Overview and description
 
-(briefly describe the project and the database)
+This project centers on constructing a comprehensive database to consolidate the skills, certifications, and roles of company employees. It aims to streamline skill-based employee searches, track skill acquisition and anticipated dates, and facilitate role assignments. The database encompasses tables for skills/certifications, employees, and roles, fostering associations between skills and employees as well as employees and roles. It serves to identify skill sets, evaluate employee skills, and analyze skill gaps within specific roles, fostering efficient talent management and skill optimization within the company.
 
 ## Crows-foot diagram
 
-(add a description of the diagram and what the reader is seeing.)
+The diagram showcases relationships between entities in a database: "CUSTOMER," "ORDER," and "DELIVERY-ADDRESS." It demonstrates that a customer can place multiple orders (one-to-many) and uses a single delivery address (one-to-one), detailing how these entities interconnect within the database structure.
 
 ```{mermaid}
 %%| echo: false

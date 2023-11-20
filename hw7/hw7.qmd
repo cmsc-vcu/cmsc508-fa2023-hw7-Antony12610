@@ -14,7 +14,7 @@ The document is structured to present a database project's details and functiona
 
 
 
-GITHUB URL:  <your URL goes here!>
+GITHUB URL:  <https://github.com/cmsc-vcu/cmsc508-fa2023-hw7-Antony12610>
 
 ```{python}
 #| eval: true

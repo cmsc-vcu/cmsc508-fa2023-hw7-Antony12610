@@ -260,32 +260,185 @@ df
 ### List people names and email addresses ordered by last_name
 
 ```{python}
+#| echo: false
+#| eval: true
+sql = """
 SELECT first_name, last_name, email
 FROM people
 ORDER BY last_name;
-```
+"""
 
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 ### List skill names of Person 1
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT s.name AS skill_name
+FROM peopleskills ps
+JOIN skills s ON ps.skills_id = s.skills_id
+WHERE ps.people_id = 1;
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List people names with Skill 6
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT p.first_name, p.last_name
+FROM people p
+JOIN peopleskills ps ON p.people_id = ps.people_id
+WHERE ps.skills_id = 6;
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List people with a DEVELOPER role
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT p.first_name, p.last_name
+FROM people p
+INNER JOIN peopleroles pr ON p.people_id = pr.people_id
+INNER JOIN roles r ON pr.role_id = r.id
+WHERE r.name = 'Developer';
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List names and email addresses of people without skills
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT p.first_name, p.last_name, p.email
+FROM people p
+WHERE p.people_id NOT IN (SELECT DISTINCT people_id FROM peopleskills);
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List names and tags of unused skills
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT name, tag
+FROM skills
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM peopleskills ps
+    WHERE ps.skills_id = skills.skills_id
+);
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List people names and skill names with the BOSS role
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT p.first_name, p.last_name, s.name
+FROM people p
+JOIN peopleroles pr ON p.people_id = pr.people_id
+JOIN roles r ON pr.id = r.id AND r.name = 'Boss'
+LEFT JOIN peopleskills ps ON p.people_id = ps.people_id
+LEFT JOIN skills s ON ps.skills_id = s.skills_id;
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ### List ids and names of unused roles
 
+```{python}
+#| echo: false
+#| eval: true
+sql = """
+SELECT id, name
+FROM roles
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM peopleroles
+    WHERE roles.id = peopleroles.id
+);
+"""
+
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
+```
 
 ## Reflection
 
-(Write a paragraph expressing your thoughts, feelings, and insights about your experience with this assignment.  Pause and breath before writing - I'm trying to encourage critical thinking and self-awareness while allowing you to explore the connections between theory and practice. And yes, delete this paragraph.)
+This assignment really had me struggling. I really thought I had the concept and I felt like I was flying through it, but then I realized i was doing most things wrong which just leaad to a lot of confusion. I need to fix these issues, as I need to fully understand what to do for our semester project. 

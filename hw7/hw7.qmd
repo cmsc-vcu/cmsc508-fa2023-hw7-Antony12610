@@ -10,8 +10,8 @@ format:
         code-copy: true
 ---
 
-The document is structured to present a database project's details and functionality using a combination of markdown text and Python code cells. It covers an overview of the project's aim, an explanation of an ER diagram, descriptions of database tables ('People,' 'Skills,' and 'Roles'), snapshots of table data, sample SQL queries, and their respective outputs. Overall, it efficiently combines explanations, code snippets, and query results to demonstrate the database's design, contents, and querying capabilities.
 
+The document is structured to present a database project's details and functionality using a combination of markdown text and Python code cells. It covers an overview of the project's aim, an explanation of an ER diagram, descriptions of database tables ('People,' 'Skills,' and 'Roles'), snapshots of table data, sample SQL queries, and their respective outputs. Overall, it efficiently combines explanations, code snippets, and query results to demonstrate the database's design, contents, and querying capabilities.
 
 
 GITHUB URL:  <https://github.com/cmsc-vcu/cmsc508-fa2023-hw7-Antony12610>
@@ -31,7 +31,6 @@ from IPython.display import display, Markdown
 ```{python}
 #| eval: true
 #| echo: false
-
 # modify config_map to reflect credentials needed by this program
 config_map = {
     'user':'CMSC508_USER',
@@ -55,10 +54,8 @@ for param in config.keys():
 ```{python}
 #| eval: true
 #| echo: false
-
 # build a sqlalchemy engine string
 engine_uri = f"mysql+pymysql://{config['user']}:{config['password']}@{config['host']}/{config['database']}"
-
 # create a database connection.  THIS IS THE ACTUAL CONNECTION!
 try:
     cnx = create_engine(engine_uri)
@@ -75,7 +72,6 @@ except Exception as e:
 ```{python}
 #| echo: false
 #| eval: true
-
 # Do a quick test of the connection and trap the errors better!
 try:
     databases = pd.read_sql("show databases",cnx)
@@ -87,7 +83,6 @@ except ProgrammingError as e:
     print(f"Programming Error:\n{str(e)}\n")
 except Exception as e:
     print(f"An error occurred:\n{str(e)}\n")
-
 ```
 
 ## Overview and description
@@ -96,21 +91,66 @@ This project centers on constructing a comprehensive database to consolidate the
 
 ## Crows-foot diagram
 
-The diagram showcases relationships between entities in a database: "CUSTOMER," "ORDER," and "DELIVERY-ADDRESS." It demonstrates that a customer can place multiple orders (one-to-many) and uses a single delivery address (one-to-one), detailing how these entities interconnect within the database structure.
+(add a description of the diagram and what the reader is seeing.)
 
 ```{mermaid}
 %%| echo: false
-erDiagram
-    CUSTOMER ||--o{ ORDER : places
-    CUSTOMER }|..|{ DELIVERY-ADDRESS : uses
-    CUSTOMER{
+   erDiagram
+    SKILLS ||--o{ PEOPLESKILLS : ""
+    PEOPLE ||--o{ PEOPLESKILLS: ""
+    PEOPLE ||--o{ PEOPLE_ROLES : ""
+    ROLES ||--o{ PEOPLE_ROLES : ""
+    
+    SKILLS {
         int id
-        string first_name
-        string last_name
+        varchar name
+        varchar description
+        varchar tag
+        varchar url 
+        int time_commitment
+        primary key (id)
     }
-    DELIVERY-ADDRESS {
-        int id
+
+    PEOPLE {
+        id int
+        first_name varchar(255)
+        last_name varchar(255)
+        email varchar(255)
+        linkedin_url varchar(255)
+        headshot_url varchar(255)
+        discord_handle varchar(255)
+        brief_bio varchar(255)
+        date_joined date
+        primary key (id)
     }
+
+    PEOPLESKILLS {
+        id int
+        skills_id int
+        people_id int
+        date_acquired date
+        primary key (id),
+        foreign key (skills_id) references skills(id),
+        foreign key (people_id) references people(id)
+    }
+
+    ROLES {
+        id int
+        name varchar(255)
+        sort_priority int
+        primary key (id)
+    }
+
+    PEOPLE_ROLES {
+        id int
+        people_id int
+        role_id int
+        date_role_acquired date
+        primary key (id),
+        foreign key (people_id) references people(id),
+        foreign key (role_id) references roles(id)
+    }
+
 ```
 
 ## Examples of data in the database
@@ -149,10 +189,19 @@ Below is a list of data in the *skills* table.
 ```{python}
 #| echo: false
 #| eval: true
-
+sql = f"""
+select * from skills;
+"""
 ## Add code to list roles table here
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
-
 ### Roles table
 
 The *roles* table contains elements that describe ... 
@@ -162,8 +211,18 @@ Below is a list of data in the *roles* table.
 ```{python}
 #| echo: false
 #| eval: true
-
+sql = f"""
+select * from roles;
+"""
 ## Add code to list roles table here
+try:
+    df = pd.read_sql(sql,cnx)
+    df
+except Exception as e:
+    message = str(e)
+    print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
+    df = pd.DataFrame()
+df
 ```
 
 
@@ -195,12 +254,16 @@ except Exception as e:
     print(f"An error occurred:\n\n{message}\n\nIgnoring and moving on.")
     df = pd.DataFrame()
 df
-
 ```
 
 
 ### List people names and email addresses ordered by last_name
 
+```{python}
+SELECT first_name, last_name, email
+FROM people
+ORDER BY last_name;
+```
 
 ### List skill names of Person 1
 
@@ -226,4 +289,3 @@ df
 ## Reflection
 
 (Write a paragraph expressing your thoughts, feelings, and insights about your experience with this assignment.  Pause and breath before writing - I'm trying to encourage critical thinking and self-awareness while allowing you to explore the connections between theory and practice. And yes, delete this paragraph.)
-
